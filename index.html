@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Terminal Chat</title>
+
+  <!-- BASIC STYLING (we’ll improve later) -->
+  <style>
+    body {
+      margin: 0;
+      background: #0b0f14;
+      color: #d1f7c4;
+      font-family: monospace;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .terminal {
+      width: 90%;
+      max-width: 900px;
+      height: 90vh;
+      background: #05080d;
+      border: 1px solid #1f2937;
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    #chat {
+      flex: 1;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      font-size: 14px;
+    }
+
+    .input-line {
+      display: flex;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    input {
+      background: transparent;
+      border: none;
+      outline: none;
+      color: #9effa1;
+      font-family: monospace;
+      font-size: 14px;
+      width: 100%;
+    }
+
+    .prompt {
+      color: #6ee7b7;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="terminal">
+    <div id="chat"></div>
+
+    <div class="input-line">
+      <span class="prompt">&gt;</span>
+      <input id="username" placeholder="username" />
+      <input id="message" placeholder="type message and press enter" />
+    </div>
+  </div>
+
+  <!-- 🔥 FIREBASE (Realtime Database ONLY) -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+  <!-- YOUR SCRIPT -->
+  <script src="script.js"></script>
+
+</body>
+</html>
