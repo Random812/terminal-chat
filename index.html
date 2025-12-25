@@ -1,79 +1,40 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-  <meta charset="UTF-8" />
   <title>Terminal Chat</title>
-
-  <!-- BASIC STYLING (we’ll improve later) -->
   <style>
     body {
-      margin: 0;
       background: #0b0f14;
-      color: #d1f7c4;
+      color: #00ff9c;
       font-family: monospace;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      padding: 20px;
     }
-
-    .terminal {
-      width: 90%;
-      max-width: 900px;
-      height: 90vh;
-      background: #05080d;
-      border: 1px solid #1f2937;
-      padding: 12px;
-      display: flex;
-      flex-direction: column;
-    }
-
-    #chat {
-      flex: 1;
+    #output {
+      height: 80vh;
       overflow-y: auto;
       white-space: pre-wrap;
-      font-size: 14px;
+      border: 1px solid #1f2933;
+      padding: 10px;
     }
-
-    .input-line {
-      display: flex;
-      gap: 8px;
-      margin-top: 6px;
-    }
-
-    input {
-      background: transparent;
+    #command {
+      width: 100%;
+      background: black;
+      color: #00ff9c;
       border: none;
       outline: none;
-      color: #9effa1;
-      font-family: monospace;
-      font-size: 14px;
-      width: 100%;
-    }
-
-    .prompt {
-      color: #6ee7b7;
+      font-size: 16px;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
 
-  <div class="terminal">
-    <div id="chat"></div>
+<div id="output">Terminal Chat v1.0</div>
+<input id="command" placeholder="type command..." autofocus />
 
-    <div class="input-line">
-      <span class="prompt">&gt;</span>
-      <input id="username" placeholder="username" />
-      <input id="message" placeholder="type message and press enter" />
-    </div>
-  </div>
-
-  <!-- 🔥 FIREBASE (Realtime Database ONLY) -->
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-
-  <!-- YOUR SCRIPT -->
-  <script src="script.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+<script src="script.js"></script>
 
 </body>
 </html>
