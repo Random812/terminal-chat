@@ -13,6 +13,7 @@ const db = firebase.database();
 const output = document.getElementById("output");
 const input = document.getElementById("command");
 const statusBar = document.getElementById("status");
+const uploadInput = document.getElementById("presenceUpload");
 
 /***** STATE *****/
 let loginStep = 0;
@@ -29,7 +30,7 @@ function print(text = "") {
   output.scrollTop = output.scrollHeight;
 }
 
-/***** BOOT SCREENS *****/
+/***** BOOT *****/
 function bootScreen() {
   output.innerText =
 `Initializing Terminal Chat...
@@ -78,32 +79,33 @@ function resetToLogin() {
   statusBar.innerText = "";
 }
 
-/***** ONLINE / OFFLINE *****/
+/***** ONLINE / OFFLINE + IMAGE *****/
 function setOnline(state) {
   if (!currentUser) return;
   db.ref(`presence/${currentUser}`).set({
     online: state,
-    lastSeen: Date.now()
+    lastSeen: Date.now(),
+    image: null
   });
 }
 
 window.addEventListener("beforeunload", () => setOnline(false));
 
-/***** ENSURE ROOM SYNC (FIX FOR NEW USERS) *****/
+/***** FIX: ENSURE USER ROOMS EXISTS (NEW USERS) *****/
 function ensureUserRoomSync() {
   if (!currentUser) return;
-  db.ref(`users/${currentUser}/rooms`).once("value", snap => {
+  db.ref(`users/${currentUser}`).once("value", snap => {
     if (!snap.exists()) {
+      db.ref(`users/${currentUser}`).set({ rooms: {} });
+    } else if (!snap.val().rooms) {
       db.ref(`users/${currentUser}/rooms`).set({});
     }
   });
 }
 
-/***** LOAD ROOMS (INVITE-ONLY) *****/
+/***** LOAD ROOMS *****/
 function loadRooms() {
-  if (!currentUser) return;
   rooms = [];
-
   db.ref(`users/${currentUser}/rooms`).once("value", snap => {
     if (!snap.exists()) {
       print("No rooms yet");
@@ -116,6 +118,20 @@ function loadRooms() {
     });
   });
 }
+
+/***** IMAGE / GIF UPLOAD (ONLINE STATUS) *****/
+uploadInput.addEventListener("change", e => {
+  if (!currentUser) return;
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    db.ref(`presence/${currentUser}/image`).set(reader.result);
+    print("Status image updated");
+  };
+  reader.readAsDataURL(file);
+});
 
 /***** INPUT HANDLER *****/
 input.addEventListener("keydown", e => {
@@ -146,7 +162,7 @@ input.addEventListener("keydown", e => {
     return;
   }
 
-  /* LOGIN FLOW */
+  /* LOGIN */
   if (loginStep === 0) {
     tempUsername = value;
     loginStep = 1;
@@ -157,7 +173,6 @@ input.addEventListener("keydown", e => {
   if (loginStep === 1) {
     const password = value;
 
-    /* ADMIN LOGIN */
     if (tempUsername === "eggsy" && password === "Enigmaplays") {
       currentUser = "eggsy";
       isAdmin = true;
@@ -176,13 +191,13 @@ invite <room> <user>
 open <room>
 rooms
 logout
-/whoami`;
+/whoami
+/upload`;
 
       loadRooms();
       return;
     }
 
-    /* USER LOGIN / REGISTER */
     db.ref(`accounts/${tempUsername}`).once("value", snap => {
       if (snap.exists() && snap.val().password !== password) {
         resetToLogin();
@@ -207,15 +222,21 @@ Commands:
 open <room>
 rooms
 logout
-/whoami`;
+/whoami
+/upload`;
 
       loadRooms();
     });
     return;
   }
 
-  /* COMMAND MODE */
+  /* COMMANDS */
   const parts = value.split(" ");
+
+  if (value === "/upload") {
+    uploadInput.click();
+    return;
+  }
 
   if (value === "logout") {
     setOnline(false);
@@ -255,7 +276,7 @@ logout
   }
 
   if (parts[0] === "rooms") {
-    if (rooms.length === 0) print("No rooms yet");
+    if (!rooms.length) print("No rooms yet");
     rooms.forEach((r, i) => print(`[${i + 1}] ${r}`));
     return;
   }
@@ -289,7 +310,7 @@ Type 'exit' to leave
   print("Unknown command");
 });
 
-/***** TYPING INDICATOR *****/
+/***** TYPING *****/
 input.addEventListener("input", () => {
   if (!currentRoom || !currentUser) return;
 
