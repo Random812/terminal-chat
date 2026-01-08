@@ -1,21 +1,41 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Terminal Chat</title>
+
   <style>
+    * {
+      box-sizing: border-box;
+    }
+
     body {
+      margin: 0;
       background: #0b0f14;
       color: #00ff9c;
       font-family: monospace;
-      padding: 20px;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
+
     #output {
-      height: 80vh;
+      flex: 1;
       overflow-y: auto;
       white-space: pre-wrap;
-      border: 1px solid #1f2933;
-      padding: 10px;
+      border-bottom: 1px solid #1f2933;
+      padding: 12px;
+      font-size: 14px;
     }
+
+    #status {
+      height: 18px;
+      padding-left: 10px;
+      font-size: 12px;
+      color: #7fffd4;
+    }
+
     #command {
       width: 100%;
       background: black;
@@ -23,18 +43,32 @@
       border: none;
       outline: none;
       font-size: 16px;
-      margin-top: 10px;
+      padding: 12px;
+    }
+
+    @media (max-width: 600px) {
+      #output {
+        font-size: 13px;
+      }
+      #command {
+        font-size: 15px;
+      }
     }
   </style>
 </head>
+
 <body>
 
-<div id="output">Terminal Chat v1.0</div>
-<input id="command" placeholder="type command..." autofocus />
+  <div id="output"></div>
+  <div id="status"></div>
+  <input id="command" placeholder="type command..." autofocus />
 
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
-<script src="script.js"></script>
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+
+  <!-- App -->
+  <script src="script.js"></script>
 
 </body>
 </html>
